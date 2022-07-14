@@ -1,35 +1,29 @@
 
 
 # To do List
-This is a simple ToDO List website. 
+This is a simple ToDO List website. on complition the website will enable the user to set multiple todos with different functionality. Currently it's on it's first stage and it can only show the data which is manually inserted via javascript array.
 ## Built With
 
 - HTML
 - CSS
 - Javascript
+- WebPack
 
-
-## Live Demo (if available)
-
-[Click here to see the Website](https://eyasuteshome.github.io/Zema-songs/index.html)
-
-## Video Demonstration
-[click Here to Watch Video Demo](https://www.loom.com/share/c1b96009d83a4ab5948ca8a6620d8810)
-## Acknowledgment
-This Project design is taken from [Cindy Shin](https://www.behance.net/adagio07). If you are using this design in the future please make sure to give credit to Cindy Shin.
 
 ## Getting Started
 
-To successfully utilize this project first of all you need to clone or download the repository. Next, open the index.html file to check the website’s main page. If you want to add or edit the files you can do that by simply opening the file folder in VS code.
+To successfully utilize this project first of all you need to clone or download the repository. Make sure to setup WebPack Environment. Next, open the index.html file to check the website’s main page with the command "npm start". If you want to add or edit the files you can do that by simply opening the file folder in VS code.
 
 
 ## prerequisites:
 . VS code
 . HTML, CSS and Javascript extension
 . node.js 
+. WebPack
 
 
-## Authors
+
+## Author
 
 👤 Eyasu Teshome
 
