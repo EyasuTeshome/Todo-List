@@ -3,29 +3,21 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-    <title>Webpack</title>
+    <title>To-do List</title>
 </head>
 
 <body>
-    <div class="main">
-        <ul class="list">
-            <li class="top">Today's To Do<img alt="icon" src="https://img.favpng.com/13/13/2/recycling-symbol-computer-icons-clip-art-png-favpng-HnyFQ3Np1BKNvpJYAp76w8Shy.jpg"></li>
-            <li><input type="text" class="action" placeholder="Add to your list..."></li>
-        </ul>
-        <div class="newlist">
-            <ul class="list1">
-
-            </ul>
-        </div>
-        <div class="clear">Clear content</div>
-    </div>
-
-    <script src="../dist/main.js"></script>
+    <section class="todo-container">
+        <h3>Today's To Do <span>&#10227;</span></h3>
+        <hr class="line-break">
+        <input type="text" name="add" id="input-todo" class="inputField" placeholder="Add to your list..."><span>&#x23CE;</span>
+        <hr class="line-break">
+        <div class="list-item"></div>
+        <a href="#" class="clear-completed">
+            <p class="clear-p">Clear all completed</p>
+        </a>
+    </section>
 </body>
 
 </html>

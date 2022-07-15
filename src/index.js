@@ -1,28 +1,134 @@
 /* eslint-disable */
+
 import './style.css';
+import interactive from './interactiveList.js';
+import clearCompletedTasks from './addRemove.js';
 
+class SingleToDo {
+    constructor(description) {
+        this.description = description;
+        this.completed = false;
+        this.index = 0;
+    }
+}
+class ToDoList {
+    constructor(toDoTasksArray = [], container) {
+        this.toDoTasksArray = toDoTasksArray;
+        this.container = document.querySelector(container);
+    }
 
-const todoList = [{
-        index: '1',
-        description: 'Wake up at 6 AM'
-    },
-    {
-        index: '2',
-        description: 'Breakfast at 8 AM'
-    },
-    {
-        index: '3',
-        description: 'Go to Work'
-    },
-]
+    addToDo(todo) {
+        const newToDo = new SingleToDo(todo);
+        this.toDoTasksArray.push(newToDo);
+        // update index
+        this.toDoTasksArray = this.toDoTasksArray.map((todo, index = 1) => {
+            todo.index = index;
+            return todo;
+        });
+        this.displayToDo();
+        this.setListToLocal(this.toDoTasksArray);
+        window.location.reload();
+    }
 
+    removeToDo(todoId) {
+        const filterToDo = this.toDoTasksArray.filter((todo) => parseInt((todoId), 10) !== todo.index);
+        this.toDoTasksArray = filterToDo;
+        // update index
+        this.toDoTasksArray = this.toDoTasksArray.map((todo, index = 1) => {
+            todo.index = index;
+            return todo;
+        });
+        this.displayToDo();
+        this.setListToLocal(this.toDoTasksArray);
+        window.location.reload();
+    }
 
-const newlist = document.querySelector('.list1');
+    setToDoArray(newToDoArray) {
+        this.toDoTasksArray = newToDoArray;
+        this.setListToLocal(this.toDoTasksArray);
+    }
 
-newlist.innerHTML = todoList.map((todo) => `
-<li class="newlist1">
-      <input id="${todo.index}" class="check" type="checkbox"/>
-      <span class="text">${todo.description}</span>
-      <button class="delete"><img src="https://e7.pngegg.com/pngimages/179/938/png-clipart-computer-icons-hamburger-button-dots-kebab-menu-text-rectangle-thumbnail.png"></button>
-      </li>
-    `);
+    getToDoArray() {
+        return this.toDoTasksArray;
+    }
+
+    setListToLocal() {
+        localStorage.setItem('lists', JSON.stringify(this.toDoTasksArray));
+    }
+
+    getListFromLocal() {
+        const getList = localStorage.getItem('lists');
+        if (getList) {
+            this.toDoTasksArray = JSON.parse(getList);
+        }
+        this.displayToDo();
+    }
+
+    displayToDo() {
+        this.toDoTasksArray.sort((a, b) => a.index - b.index);
+
+        this.container.innerHTML = this.toDoTasksArray.map((todo) => `
+        <article id=${todo.index} class="article">
+        <div class="linn">
+        <input ${todo.completed ? 'checked' : ''} type="checkbox">
+        <textarea class = "${todo.completed ? 'complete' : ''} text-area-class" rows="1" cols="30">${todo.description}</textarea> 
+        <button id=${todo.index} class="todo-btn" > &#128465;</button></div>
+        <hr class="line-break">
+        </article>`).join('');
+    }
+}
+
+const myToDo = new ToDoList([], '.list-item');
+
+document.addEventListener('click', (e) => {
+    interactive(e);
+    const todoId = e.target.parentElement.parentElement.id;
+    if (e.target.checked) {
+        const upDatedToDo = myToDo.getToDoArray().map((todo) => {
+            if (todo.index === parseInt((todoId), 10)) {
+                const newTodo = {...todo };
+                newTodo.completed = true;
+                return newTodo;
+            }
+            return todo;
+        });
+        myToDo.setToDoArray(upDatedToDo);
+    } else {
+        const upDatedToDo = myToDo.getToDoArray().map((todo) => {
+            if (todo.index === parseInt((todoId), 10)) {
+                const newTodo = {...todo };
+                newTodo.completed = false;
+                return newTodo;
+            }
+            return todo;
+        });
+        myToDo.setToDoArray(upDatedToDo);
+    }
+});
+
+const inputField = document.querySelector('.inputField');
+const inputTodo = document.getElementById('input-todo');
+
+inputField.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') {
+        myToDo.addToDo(inputTodo.value);
+        inputTodo.value = '';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    myToDo.getListFromLocal();
+    myToDo.displayToDo();
+    clearCompletedTasks();
+
+    const btn = document.getElementsByClassName('todo-btn');
+
+    for (let i = 0; i < btn.length; i += 1) {
+        btn[i].addEventListener('click', (e) => {
+            const remove = e.target.id;
+            myToDo.removeToDo(remove);
+        }, false);
+    }
+});
+
+export default myToDo;
