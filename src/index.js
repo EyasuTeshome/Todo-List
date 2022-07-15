@@ -1,134 +1,101 @@
-/* eslint-disable */
-
+// Imports
 import './style.css';
-import interactive from './interactiveList.js';
-import clearCompletedTasks from './addRemove.js';
+import Status from './interactiveList.js';
+import * as task from './addRemove.js';
 
-class SingleToDo {
-    constructor(description) {
-        this.description = description;
-        this.completed = false;
-        this.index = 0;
-    }
-}
-class ToDoList {
-    constructor(toDoTasksArray = [], container) {
-        this.toDoTasksArray = toDoTasksArray;
-        this.container = document.querySelector(container);
-    }
+// variables
+const list = new Status();
 
-    addToDo(todo) {
-        const newToDo = new SingleToDo(todo);
-        this.toDoTasksArray.push(newToDo);
-        // update index
-        this.toDoTasksArray = this.toDoTasksArray.map((todo, index = 1) => {
-            todo.index = index;
-            return todo;
-        });
-        this.displayToDo();
-        this.setListToLocal(this.toDoTasksArray);
-        window.location.reload();
-    }
+// Query selectors
+const listContainer = document.querySelector('#list_container');
+const enterIcon = document.querySelector('#enter_icon');
+const newTask = document.querySelector('#add_task');
+const clearCompleted = document.querySelector('#clear_button');
 
-    removeToDo(todoId) {
-        const filterToDo = this.toDoTasksArray.filter((todo) => parseInt((todoId), 10) !== todo.index);
-        this.toDoTasksArray = filterToDo;
-        // update index
-        this.toDoTasksArray = this.toDoTasksArray.map((todo, index = 1) => {
-            todo.index = index;
-            return todo;
-        });
-        this.displayToDo();
-        this.setListToLocal(this.toDoTasksArray);
-        window.location.reload();
-    }
-
-    setToDoArray(newToDoArray) {
-        this.toDoTasksArray = newToDoArray;
-        this.setListToLocal(this.toDoTasksArray);
-    }
-
-    getToDoArray() {
-        return this.toDoTasksArray;
-    }
-
-    setListToLocal() {
-        localStorage.setItem('lists', JSON.stringify(this.toDoTasksArray));
-    }
-
-    getListFromLocal() {
-        const getList = localStorage.getItem('lists');
-        if (getList) {
-            this.toDoTasksArray = JSON.parse(getList);
-        }
-        this.displayToDo();
-    }
-
-    displayToDo() {
-        this.toDoTasksArray.sort((a, b) => a.index - b.index);
-
-        this.container.innerHTML = this.toDoTasksArray.map((todo) => `
-        <article id=${todo.index} class="article">
-        <div class="linn">
-        <input ${todo.completed ? 'checked' : ''} type="checkbox">
-        <textarea class = "${todo.completed ? 'complete' : ''} text-area-class" rows="1" cols="30">${todo.description}</textarea> 
-        <button id=${todo.index} class="todo-btn" > &#128465;</button></div>
-        <hr class="line-break">
-        </article>`).join('');
-    }
+// Functions
+function markDone(element, index) {
+  element.classList.add('check');
+  list.mark(index);
+  element.nextElementSibling.classList.add('mark');
 }
 
-const myToDo = new ToDoList([], '.list-item');
+function unmarkDone(element, index) {
+  element.classList.remove('check');
+  list.unmark(index);
+  element.nextElementSibling.classList.remove('mark');
+}
 
-document.addEventListener('click', (e) => {
-    interactive(e);
-    const todoId = e.target.parentElement.parentElement.id;
-    if (e.target.checked) {
-        const upDatedToDo = myToDo.getToDoArray().map((todo) => {
-            if (todo.index === parseInt((todoId), 10)) {
-                const newTodo = {...todo };
-                newTodo.completed = true;
-                return newTodo;
-            }
-            return todo;
-        });
-        myToDo.setToDoArray(upDatedToDo);
-    } else {
-        const upDatedToDo = myToDo.getToDoArray().map((todo) => {
-            if (todo.index === parseInt((todoId), 10)) {
-                const newTodo = {...todo };
-                newTodo.completed = false;
-                return newTodo;
-            }
-            return todo;
-        });
-        myToDo.setToDoArray(upDatedToDo);
-    }
+function createTask(taskElement) {
+  const listItem = document.createElement('li');
+  const divItem = document.createElement('div');
+  const taskcheck = document.createElement('input');
+  const taskText = document.createElement('input');
+  const dragIcon = document.createElement('span');
+
+  divItem.classList.add('flex', 'cell');
+  taskcheck.setAttribute('type', 'checkbox');
+  taskcheck.classList.add('checkbox');
+  taskcheck.checked = taskElement.completed;
+
+  taskText.classList.add('cell_textarea');
+  taskText.setAttribute('type', 'text');
+  taskText.value = taskElement.description;
+
+  dragIcon.classList.add('drag_icon');
+  dragIcon.innerHTML = '&#8942;';
+
+  if (taskElement.completed) {
+    taskcheck.classList.add('check');
+    taskText.classList.add('mark');
+  }
+
+  listItem.appendChild(divItem);
+  divItem.appendChild(taskcheck);
+  divItem.appendChild(taskText);
+  divItem.appendChild(dragIcon);
+  listContainer.appendChild(listItem);
+
+  taskcheck.addEventListener('click', () => (taskcheck.checked ? markDone(taskcheck, taskElement.index) : unmarkDone(taskcheck, taskElement.index)));
+  taskText.addEventListener('change', () => {
+    taskElement.description = taskText.value;
+    list.saveStorage();
+  });
+
+  function deleteField() {
+    task.remove(list, taskText, taskElement);
+    list.saveStorage();
+  }
+
+  taskText.addEventListener('focusin', () => {
+    divItem.classList.add('editing');
+    dragIcon.innerHTML = '&#128465;';
+    dragIcon.addEventListener('click', deleteField);
+  });
+
+  taskText.addEventListener('focusout', () => {
+    divItem.classList.remove('editing');
+    dragIcon.innerHTML = '&#8942;';
+  });
+
+  list.saveStorage();
+}
+
+// Event listeners
+window.addEventListener('DOMContentLoaded', () => {
+  list.list.forEach((value) => createTask(value));
 });
 
-const inputField = document.querySelector('.inputField');
-const inputTodo = document.getElementById('input-todo');
-
-inputField.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') {
-        myToDo.addToDo(inputTodo.value);
-        inputTodo.value = '';
-    }
+enterIcon.addEventListener('click', () => task.add(newTask, list, createTask));
+clearCompleted.addEventListener('click', () => {
+  task.clear(list);
+  list.saveStorage();
+  listContainer.innerHTML = '';
+  list.list.forEach((value) => createTask(value));
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    myToDo.getListFromLocal();
-    myToDo.displayToDo();
-    clearCompletedTasks();
-
-    const btn = document.getElementsByClassName('todo-btn');
-
-    for (let i = 0; i < btn.length; i += 1) {
-        btn[i].addEventListener('click', (e) => {
-            const remove = e.target.id;
-            myToDo.removeToDo(remove);
-        }, false);
-    }
+newTask.addEventListener('keyup', (Event) => {
+  if (Event.code === 'Enter') {
+    Event.preventDefault();
+    enterIcon.click();
+  }
 });
-
-export default myToDo;

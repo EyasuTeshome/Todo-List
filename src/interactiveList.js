@@ -1,8 +1,25 @@
-/* eslint-disable */
-export default function interactive(e) {
-    if (e.target.checked) {
-        e.target.nextElementSibling.classList.add('complete');
+export default class Status {
+  constructor() {
+    if (localStorage.getItem('list') === null) {
+      this.list = [];
     } else {
-        e.target.nextElementSibling.classList.remove('complete');
+      this.list = JSON.parse(localStorage.getItem('list'));
     }
+  }
+
+  saveStorage = () => {
+    localStorage.setItem('list', JSON.stringify(this.list));
+  }
+
+  mark = (index) => {
+    const task = this.list[index];
+    task.completed = true;
+    this.saveStorage();
+  }
+
+  unmark = (index) => {
+    const task = this.list[index];
+    task.completed = false;
+    this.saveStorage();
+  }
 }
