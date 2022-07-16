@@ -1,18 +1,14 @@
-// Imports
 import './style.css';
 import Status from './interactiveList.js';
 import * as task from './addRemove.js';
 
-// variables
 const list = new Status();
 
-// Query selectors
 const listContainer = document.querySelector('#list_container');
 const enterIcon = document.querySelector('#enter_icon');
 const newTask = document.querySelector('#add_task');
 const clearCompleted = document.querySelector('#clear_button');
 
-// Functions
 function markDone(element, index) {
   element.classList.add('check');
   list.mark(index);
@@ -80,7 +76,6 @@ function createTask(taskElement) {
   list.saveStorage();
 }
 
-// Event listeners
 window.addEventListener('DOMContentLoaded', () => {
   list.list.forEach((value) => createTask(value));
 });
