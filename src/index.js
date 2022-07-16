@@ -1,28 +1,101 @@
-/* eslint-disable */
+// Imports
 import './style.css';
+import Status from './interactiveList.js';
+import * as task from './addRemove.js';
 
+// variables
+const list = new Status();
 
-const todoList = [{
-        index: '1',
-        description: 'Wake up at 6 AM'
-    },
-    {
-        index: '2',
-        description: 'Breakfast at 8 AM'
-    },
-    {
-        index: '3',
-        description: 'Go to Work'
-    },
-]
+// Query selectors
+const listContainer = document.querySelector('#list_container');
+const enterIcon = document.querySelector('#enter_icon');
+const newTask = document.querySelector('#add_task');
+const clearCompleted = document.querySelector('#clear_button');
 
+// Functions
+function markDone(element, index) {
+  element.classList.add('check');
+  list.mark(index);
+  element.nextElementSibling.classList.add('mark');
+}
 
-const newlist = document.querySelector('.list1');
+function unmarkDone(element, index) {
+  element.classList.remove('check');
+  list.unmark(index);
+  element.nextElementSibling.classList.remove('mark');
+}
 
-newlist.innerHTML = todoList.map((todo) => `
-<li class="newlist1">
-      <input id="${todo.index}" class="check" type="checkbox"/>
-      <span class="text">${todo.description}</span>
-      <button class="delete"><img src="https://e7.pngegg.com/pngimages/179/938/png-clipart-computer-icons-hamburger-button-dots-kebab-menu-text-rectangle-thumbnail.png"></button>
-      </li>
-    `);
+function createTask(taskElement) {
+  const listItem = document.createElement('li');
+  const divItem = document.createElement('div');
+  const taskcheck = document.createElement('input');
+  const taskText = document.createElement('input');
+  const dragIcon = document.createElement('span');
+
+  divItem.classList.add('flex', 'cell');
+  taskcheck.setAttribute('type', 'checkbox');
+  taskcheck.classList.add('checkbox');
+  taskcheck.checked = taskElement.completed;
+
+  taskText.classList.add('cell_textarea');
+  taskText.setAttribute('type', 'text');
+  taskText.value = taskElement.description;
+
+  dragIcon.classList.add('drag_icon');
+  dragIcon.innerHTML = '&#8942;';
+
+  if (taskElement.completed) {
+    taskcheck.classList.add('check');
+    taskText.classList.add('mark');
+  }
+
+  listItem.appendChild(divItem);
+  divItem.appendChild(taskcheck);
+  divItem.appendChild(taskText);
+  divItem.appendChild(dragIcon);
+  listContainer.appendChild(listItem);
+
+  taskcheck.addEventListener('click', () => (taskcheck.checked ? markDone(taskcheck, taskElement.index) : unmarkDone(taskcheck, taskElement.index)));
+  taskText.addEventListener('change', () => {
+    taskElement.description = taskText.value;
+    list.saveStorage();
+  });
+
+  function deleteField() {
+    task.remove(list, taskText, taskElement);
+    list.saveStorage();
+  }
+
+  taskText.addEventListener('focusin', () => {
+    divItem.classList.add('editing');
+    dragIcon.innerHTML = '&#128465;';
+    dragIcon.addEventListener('click', deleteField);
+  });
+
+  taskText.addEventListener('focusout', () => {
+    divItem.classList.remove('editing');
+    dragIcon.innerHTML = '&#8942;';
+  });
+
+  list.saveStorage();
+}
+
+// Event listeners
+window.addEventListener('DOMContentLoaded', () => {
+  list.list.forEach((value) => createTask(value));
+});
+
+enterIcon.addEventListener('click', () => task.add(newTask, list, createTask));
+clearCompleted.addEventListener('click', () => {
+  task.clear(list);
+  list.saveStorage();
+  listContainer.innerHTML = '';
+  list.list.forEach((value) => createTask(value));
+});
+
+newTask.addEventListener('keyup', (Event) => {
+  if (Event.code === 'Enter') {
+    Event.preventDefault();
+    enterIcon.click();
+  }
+});
