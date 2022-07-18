@@ -1,122 +1,123 @@
 * {
-    box-sizing: border-box;
-    font-family: sans-serif;
-    color: black;
+  box-sizing: border-box;
+  font-family: sans-serif;
+  color: black;
 }
 
 main {
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 section {
-    box-shadow: 4px 4px 10px gray;
-    border-radius: 0.25rem;
-    max-width: 600px;
-    flex: 1 1;
+  box-shadow: 4px 4px 10px gray;
+  border-radius: 0.25rem;
+  max-width: 600px;
+  flex: 1 1;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 input[type="text"] {
-    overflow: hidden;
-    cursor: default;
-    border: none;
-    flex-grow: 2;
-    color: black;
-    font-weight: lighter;
-    background: transparent;
+  overflow: hidden;
+  cursor: default;
+  border: none;
+  flex-grow: 2;
+  color: black;
+  font-weight: lighter;
+  background: transparent;
 }
 
 input[type="text"]::-webkit-resizer {
-    display: none;
+  display: none;
 }
 
 input[type="text"]:focus-visible {
-    outline: none;
-    /* background: yellow; */
-    text-decoration: none;
-    color: #000;
+  outline: none;
+
+  /* background: yellow; */
+  text-decoration: none;
+  color: #000;
 }
 
 .flex {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
 }
 
 .header-container {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .h1-header {
-    margin-right: auto;
+  margin-right: auto;
 }
 
 .refresh {
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
 .cell {
-    padding: 1rem;
-    border-bottom: 1px solid gray;
-    width: 100%;
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+  width: 100%;
 }
 
 .cell_textarea {
-    padding-left: 1rem;
+  padding-left: 1rem;
 }
 
 .task_cell {
-    padding: 0;
+  padding: 0;
 }
 
 #add_task {
-    padding: 1rem;
-    flex-grow: 2;
+  padding: 1rem;
+  flex-grow: 2;
 }
 
-section> :last-child {
-    border-bottom: 0;
-    background-color: #f0f0f0;
-    text-align: center;
+section > :last-child {
+  border-bottom: 0;
+  background-color: #f0f0f0;
+  text-align: center;
 }
 
 .drag_icon {
-    text-align: center;
-    font-weight: bolder;
-    width: 20px;
-    height: 20px;
-    margin: 0;
+  text-align: center;
+  font-weight: bolder;
+  width: 20px;
+  height: 20px;
+  margin: 0;
 }
 
 .mark {
-    color: gray;
-    text-decoration: line-through;
+  color: gray;
+  text-decoration: line-through;
 }
 
 #enter_icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 3rem;
+  width: 20px;
+  height: 20px;
+  margin-right: 3rem;
 }
 
 #enter_icon:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #clear_button:hover {
-    color: #000;
-    text-decoration: underline;
-    cursor: pointer;
+  color: #000;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .drag_icon:hover {
-    cursor: move;
+  cursor: move;
 }
